@@ -5,6 +5,7 @@
 using namespace std;
 
 ifstream fin("in.txt");
+ofstream fout("out.txt");
 
 vector<pair<int, int>> dots;
 int width;
@@ -12,46 +13,26 @@ int height;
 
 void foldy(int y)
 {
-    int nh = max(height - y, y); // new height of paper
-    int dh = abs(height - 2 * y);
     for (int i = 0; i < dots.size(); i++)
     {
-        if (dots[i].second > y && height / 2 <= y)
+        if (dots[i].second > y)
         {
-            dots[i].second = abs(dots[i].second - 2 * y);
-        }
-        if (dots[i].second < y && height / 2 > y)
-        {
-            dots[i].second += dh;
-        }
-        if (dots[i].second > y && height / 2 > y)
-        {
-            dots[i].second = height - dots[i].second;
+            dots[i].second = 2 * y - dots[i].second;
         }
     }
-    height = nh;
+    height = y;
 }
 
 void foldx(int x)
 {
-    int nw = max(width - x, x); // new width of paper
-    int dw = abs(width - 2 * x);
     for (int i = 0; i < dots.size(); i++)
     {
-        if (dots[i].first > x && width / 2 <= x)
+        if (dots[i].first > x)
         {
-            dots[i].first = abs(dots[i].first - 2 * x);
-        }
-        if (dots[i].first < x && width / 2 > x)
-        {
-            dots[i].first += dw;
-        }
-        if (dots[i].first > x && width / 2 > x)
-        {
-            dots[i].first = width - dots[i].first;
+            dots[i].first = 2 * x - dots[i].first;
         }
     }
-    width = nw;
+    width = x;
 }
 
 int main()
@@ -87,6 +68,31 @@ int main()
         dots.push_back({stoi(s1), stoi(s2)});
     }
 
+    set<pair<int, int>> se;
+    // int total = 0;
+    for (int i = 0; i < dots.size(); i++)
+    {
+        se.insert(dots[i]);
+    }
+
+    for (int i = 0; i <= height; i++)
+    {
+        for (int j = 0; j <= width; j++)
+        {
+            if (se.find({j, i}) != se.end())
+            {
+                // total++;
+                fout << "#";
+            }
+            else
+            {
+                fout << ".";
+            }
+        }
+        fout << endl;
+    }
+    fout << endl;
+
     string instruct;
     while (fin >> instruct)
     {
@@ -104,12 +110,30 @@ int main()
         {
             foldx(num);
         }
-        set<pair<int, int>> s;
+        set<pair<int, int>> se;
+        // int total = 0;
         for (int i = 0; i < dots.size(); i++)
         {
-            s.insert(dots[i]);
+            se.insert(dots[i]);
         }
-        cout << s.size() << endl;
-        break;
+
+        for (int i = 0; i <= height; i++)
+        {
+            for (int j = 0; j <= width; j++)
+            {
+                if (se.find({j, i}) != se.end())
+                {
+                    // total++;
+                    fout << "#";
+                }
+                else
+                {
+                    fout << ".";
+                }
+            }
+            fout << endl;
+        }
+        fout << endl;
     }
+    // cout << total << endl;
 }
